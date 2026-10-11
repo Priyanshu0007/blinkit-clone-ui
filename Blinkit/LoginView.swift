@@ -47,14 +47,16 @@ struct LoginView: View {
                     removal: .move(edge: .trailing).combined(with: .opacity)
                 ))
             }
-        }
-        .sheet(isPresented: $showCountryPicker) {
-            CountryPickerSheet { country in
-                selectedCountry = country
+
+            if showCountryPicker {
+                CountryPickerSheet(
+                    isPresented: $showCountryPicker,
+                    onSelect: { country in
+                        selectedCountry = country
+                    }
+                )
+                .zIndex(100)
             }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.hidden)
-            .presentationBackground(.clear)
         }
     }
 
