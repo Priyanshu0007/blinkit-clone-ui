@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showSplash: Bool = true
+    @State private var isAuthenticated: Bool = false
 
     var body: some View {
         ZStack {
@@ -19,9 +20,33 @@ struct ContentView: View {
                             showSplash = false
                         }
                     }
+            } else if isAuthenticated {
+                HomeView(onLogout: {
+                    withAnimation(.easeInOut(duration: 0.35)) {
+                        isAuthenticated = false
+                    }
+                })
+                .transition(.asymmetric(
+                    insertion: .opacity.combined(with: .scale(scale: 0.98)),
+                    removal: .opacity
+                ))
             } else {
-                HomeView()
-                    .transition(.opacity)
+                LoginView(
+                    onLoginSuccess: {
+                        withAnimation(.easeInOut(duration: 0.35)) {
+                            isAuthenticated = true
+                        }
+                    },
+                    onSkip: {
+                        withAnimation(.easeInOut(duration: 0.35)) {
+                            isAuthenticated = true
+                        }
+                    }
+                )
+                .transition(.asymmetric(
+                    insertion: .opacity,
+                    removal: .opacity.combined(with: .scale(scale: 1.02))
+                ))
             }
         }
     }

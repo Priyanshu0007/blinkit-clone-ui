@@ -1,11 +1,14 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var searchText: String = ""
+    var onLogout: (() -> Void)? = nil
 
-    private let brandYellow = Color(red: 248/255, green: 203/255, blue: 62/255)
-    private let brandGreen = Color(red: 12/255, green: 131/255, blue: 31/255)
-    private let brandCharcoal = Color(red: 26/255, green: 26/255, blue: 26/255)
+    @State private var searchText: String = ""
+    @State private var showLogoutConfirmation: Bool = false
+
+    private let brandYellow = Color.blinkitYellow
+    private let brandGreen = Color.blinkitGreen
+    private let brandCharcoal = Color.blinkitCharcoal
 
     var body: some View {
         VStack(spacing: 0) {
@@ -26,7 +29,15 @@ struct HomeView: View {
                 .padding(.top, 16)
             }
         }
-        .background(Color(red: 245/255, green: 246/255, blue: 248/255))
+        .background(Color.blinkitBackground)
+        .confirmationDialog("Account", isPresented: $showLogoutConfirmation) {
+            Button("Log Out", role: .destructive) {
+                onLogout?()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to log out?")
+        }
     }
 
     // MARK: - Header
@@ -56,7 +67,9 @@ struct HomeView: View {
 
                 Spacer()
 
-                Button(action: {}) {
+                Button(action: {
+                    showLogoutConfirmation = true
+                }) {
                     Image(systemName: "person.crop.circle.fill")
                         .font(.system(size: 32))
                         .foregroundColor(brandCharcoal)
